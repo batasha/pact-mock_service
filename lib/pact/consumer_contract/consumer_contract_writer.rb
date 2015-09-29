@@ -39,7 +39,7 @@ module Pact
     end
 
     def can_write?
-      consumer_name && provider_name && consumer_contract_details[:pact_dir]
+      consumer_name && provider_name && consumer_contract_details[:pact_dir] && pactfile_write_mode != :read
     end
 
     private

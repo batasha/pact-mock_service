@@ -50,6 +50,8 @@ module Pact
       method_option :consumer, desc: "Consumer name"
       method_option :provider, desc: "Provider name"
       method_option :pid_dir, desc: "PID dir", default: 'tmp/pids'
+      method_option :write_mode, aliases: "-m", desc: "Pactfile write mode"
+      method_option :file, aliases: "-f", desc: "Pact file to read from when in read mode"
 
       def start
         start_server(mock_service_pidfile) do

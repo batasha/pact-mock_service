@@ -51,7 +51,9 @@ module Pact
           consumer: options[:consumer],
           provider: options[:provider],
           cors_enabled: options[:cors],
-          pact_specification_version: options[:pact_specification_version]
+          pact_specification_version: options[:pact_specification_version],
+          pactfile_write_mode: options[:write_mode],
+          file_uri: options[:file]
         }
         service_options[:log_file] = open_log_file if options[:log]
         service_options

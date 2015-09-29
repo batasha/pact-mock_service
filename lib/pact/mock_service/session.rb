@@ -15,16 +15,31 @@ module Pact
 
       def initialize options
         @logger = options[:logger]
-        @expected_interactions = Interactions::ExpectedInteractions.new
+        @consumer_contract_details = {
+        pact_dir: options[:pact_dir],
+        consumer: {name: options[:consumer]},
+        provider: {name: options[:provider]},
+        interactions: verified_interactions,
+        pact_specification_version: options[:pact_specification_version],
+        pactfile_write_mode: options[:pactfile_write_mode],
+        pactfile: options[:file_uri]
+        }
+        @expected_interactions = if @consumer_contract_details[:pactfile_write_mode] == "read"
+          load_interactions_from_file
+        else
+          Interactions::ExpectedInteractions.new
+        end
         @actual_interactions = Interactions::ActualInteractions.new
         @verified_interactions = Interactions::VerifiedInteractions.new
-        @consumer_contract_details = {
-          pact_dir: options[:pact_dir],
-          consumer: {name: options[:consumer]},
-          provider: {name: options[:provider]},
-          interactions: verified_interactions,
-          pact_specification_version: options[:pact_specification_version]
-        }
+      end
+
+      def load_interactions_from_file
+        expected_interactions = Interactions::ExpectedInteractions.new
+        interactions_from_file = Pact::ConsumerContract.from_uri(@consumer_contract_details[:pactfile]).interactions
+        interactions_from_file.each do | interaction |
+          expected_interactions << interaction
+        end
+        expected_interactions
       end
 
       def set_expected_interactions interactions
